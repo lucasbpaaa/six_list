@@ -1,16 +1,15 @@
 #Question 1:
 
-ˋˋˋˋˋ
+''''
 
-A função ˋfind_ndˋ calcula a menor distancia de um ponto a um conjunto de pontos. 
-Agora, vamos analisar a complexidade dessa funcao:
-Dado um ponto ˋpointˋ e um conjunto de pontos em ˋdataˋ, estamos:
-1. Calculando a subtracao entre ˋpointˋ e cada ponto em ˋdataˋ, temos complexidade O(n).
-2. calculando a distancia de ˋpointˋ a cada ponto em ˋdataˋ, assim, temos complexidade O(n).
+    A função 'find_nd' calcula a menor distancia de um ponto a um conjunto de pontos, retornando o elemento cuja distância ao ponto dado é mínima e seu índice.
+    Dado um ponto 'point' e um conjunto de pontos em 'data', vamos analisar a complexidade dessa funcao:
+1. Calculando a subtracao entre 'point' e cada ponto em 'data', temos complexidade O(n).
+2. calculando a distancia de 'point' a cada ponto em 'data', assim, temos complexidade O(n).
 3. Buscando, no array d, o elemento de menor valor, temos complexidade O(n).
-Logo, de 1, 2, 3, temos complexidade O(n) para a funcao.
+    Logo, de 1, 2, 3, temos complexidade O(n) para a funcao problema.
 
-ˋˋˋ
+'''
 
 #Question 2:
 
@@ -78,3 +77,6 @@ if __name__ == '__main__':
     maze = generate_maze(m, n, room, wall, cheese)
     print('\nMaze 2')
     print_maze(maze)
+
+
+#Question 3:
