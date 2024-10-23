@@ -80,3 +80,100 @@ if __name__ == '__main__':
 
 
 #Question 3:
+
+import random
+
+def generate_maze(m, n):
+    # Cria um labirinto de m x n
+    maze = [['H'] * (n * 2 + 1) for _ in range(m * 2 + 1)]
+    
+    # Função para criar o labirinto
+    def dfs(x, y):
+        maze[x][y] = ' '  # Marca como caminho
+        directions = [(0, 2), (2, 0), (0, -2), (-2, 0)]  # Direções: Leste, Sul, Oeste, Norte
+        random.shuffle(directions)  # Embaralha direções para criar um labirinto aleatório
+        
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 < nx < m * 2 and 0 < ny < n * 2 and maze[nx][ny] == 'H':
+                maze[x + dx // 2][y + dy // 2] = ' '  # Abre a parede
+                dfs(nx, ny)  # Recursão na nova posição
+
+    # Inicia a geração do labirinto a partir da posição (1, 1)
+    dfs(1, 1)
+    
+    # Coloca o queijo em uma posição aleatória dentro do caminho
+    while True:
+        cheese_x = random.randint(1, m) * 2 - 1
+        cheese_y = random.randint(1, n) * 2 - 1
+        if maze[cheese_x][cheese_y] == ' ':
+            maze[cheese_x][cheese_y] = 'C'  # Marca o queijo
+            break
+
+    return maze
+
+def print_maze(maze):
+    for row in maze:
+        print(' '.join(row))
+
+def find_path(maze, start):
+    while True:
+        stack = [start]
+        visited = set()
+        path = []  # Para armazenar o caminho
+        found_cheese = False
+
+        while stack:
+            x, y = stack.pop()
+            if (x, y) in visited:
+                continue
+            
+            visited.add((x, y))
+            path.append((x, y))
+
+            if maze[x][y] == 'C':  # Se encontrou o queijo
+                found_cheese = True
+                break
+            
+            # Direções: Norte, Sul, Leste, Oeste
+            directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+            found_valid_move = False
+            
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < len(maze) and 0 <= ny < len(maze[0]) and maze[nx][ny] != 'H' and (nx, ny) not in visited:
+                    stack.append((nx, ny))
+                    found_valid_move = True
+            
+            if not found_valid_move:
+                path.pop()  # Remove a posição atual, pois não há mais movimentos válidos
+
+        if found_cheese:
+            return path
+        else:
+            # Reinicia a busca se não encontrou o queijo
+            print("Reiniciando a busca...")
+
+    return None  # Retorna None se não encontrar o caminho
+
+def display_path(maze, path):
+    for x, y in path:
+        if maze[x][y] != 'C':  # Não marcar a posição do queijo
+            maze[x][y] = '*'
+    print_maze(maze)
+
+# Gerar o labirinto e encontrar o caminho
+m, n = 5, 5  # Dimensões do labirinto
+maze = generate_maze(m, n)
+print("Labirinto gerado:")
+print_maze(maze)
+
+start_position = (1, 1)
+path = find_path(maze, start_position)
+
+if path:
+    print("\nCaminho encontrado:")
+    display_path(maze, path)
+else:
+    print("Nenhum caminho encontrado.")
+
