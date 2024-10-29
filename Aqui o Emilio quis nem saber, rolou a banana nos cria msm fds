@@ -119,7 +119,7 @@ def print_maze(maze):
 def find_path(maze, start):
     while True:
         stack = [start]
-        visited = set()
+        visited = set() #Não queremos repetir caminhos já visitados
         path = []  # Para armazenar o caminho
         found_cheese = False
 
@@ -131,11 +131,11 @@ def find_path(maze, start):
             visited.add((x, y))
             path.append((x, y))
 
-            if maze[x][y] == 'C':  # Se encontrou o queijo
+            if maze[x][y] == 'C':  #Encontramos o queijo
                 found_cheese = True
                 break
             
-            # Direções: Norte, Sul, Leste, Oeste
+            # Direções:
             directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
             found_valid_move = False
             
@@ -146,15 +146,12 @@ def find_path(maze, start):
                     found_valid_move = True
             
             if not found_valid_move:
-                path.pop()  # Remove a posição atual, pois não há mais movimentos válidos
+                path.pop()  # Quando encontrar um caminho errado, removemos o ultimo elemento do caminho para que esse mesmo caminho não se repita.
 
         if found_cheese:
             return path
-        else:
-            # Reinicia a busca se não encontrou o queijo
-            print("Reiniciando a busca...")
-
-    return None  # Retorna None se não encontrar o caminho
+        
+        return None  # Retorna None se não encontrar o caminho
 
 def display_path(maze, path):
     for x, y in path:
@@ -176,4 +173,96 @@ if path:
     display_path(maze, path)
 else:
     print("Nenhum caminho encontrado.")
+
+
+#Question 4:
+
+class Grafo:
+    def __init__(self):
+        self.adjacencia = {}
+        self.val = {}
+
+    def adjacent(self, x, y) -> bool:
+        return x in self.adjacencia and y in self.adjacencia[x]
+    
+    def neighbors(self, x) -> list:
+        return self.adjacencia.get(x, []) #Vamos ver todos os y que têm aresta em comum com x
+    
+    def add_vertex(self, x) -> bool:
+        if x not in self.adjacencia:
+            self.adjacencia[x] = []
+            return True
+        return False
+    
+    def remove_vertex(self, x) -> bool:
+        if x in self.adjacencia:
+            del self.adjacencia[x] #Removendo x
+
+            for vertex in self.adjacencia: #Vamos remover as arestas que apontam para x
+                if x in self.adjacencia[vertex]:
+                    self.adjacencia[vertex].remove(x)
+            return True
+        return False
+
+    def add_edge(self, x, y) -> bool:
+        if x in self.adjacencia and y not in self.adjacencia[x]: #Se y não está na adjacencia, basta colocá-lo
+            self.adjacencia[x].append(y)    
+            return True
+        return False
+    
+    def remove_edge(self, x, y) -> bool:
+        if x in self.adjacencia and y in self.adjacencia[x]: #Se y está na adjacencia, basta removê-lo
+            self.adjacencia[x].remove(y)
+            return True
+        return False
+    
+    def get_vertex_value(self, x) -> object:
+        return self.val[x]
+    
+    def set_vertex_value(self, x, v) -> None:
+        self.val[x] = v
+
+
+''''
+
+Testes, caso queira:
+
+if __name__ == "__main__":
+    g = Grafo()
+
+    # Teste add_vertex
+    assert g.add_vertex("A") == True
+    assert g.add_vertex("A") == False  # Deve falhar, pois "A" já existe
+
+    # Teste add_edge
+    g.add_vertex("B")
+    assert g.add_edge("A", "B") == True
+    assert g.add_edge("A", "B") == False  # A aresta já existe
+
+    # Teste adjacent
+    assert g.adjacent("A", "B") == True
+    assert g.adjacent("B", "A") == False
+
+    # Teste neighbors
+    assert g.neighbors("A") == ["B"]
+    assert g.neighbors("B") == []
+
+    # Teste remove_edge
+    assert g.remove_edge("A", "B") == True
+    assert g.remove_edge("A", "B") == False  # A aresta já foi removida
+
+    # Teste remove_vertex
+    assert g.remove_vertex("A") == True
+    assert g.remove_vertex("A") == False  # Já foi removido
+
+    # Teste get_vertex_value e set_vertex_value
+    g.add_vertex("C")
+    g.set_vertex_value("C", 42)
+    assert g.get_vertex_value("C") == 42
+    g.set_vertex_value("C", 100)
+    assert g.get_vertex_value("C") == 100
+
+    print("Todos os testes passaram!")
+
+''''
 
